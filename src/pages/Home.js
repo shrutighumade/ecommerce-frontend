@@ -9,8 +9,7 @@ import Navbar from "../components/Navbar";
 
 function Home() {
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ Correct
-
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ linked to Navbar
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
@@ -23,7 +22,7 @@ function Home() {
   const fetchProducts = async () => {
     try {
       const response = await getProducts();
-      setProducts(response.data || []); // Ensure it's always an array
+      setProducts(response.data || []); // Always safe as array
     } catch (error) {
       console.error("Failed to load products!", error);
       setProducts([]);
@@ -76,7 +75,7 @@ function Home() {
     }
   };
 
-  // Filtered products for search
+  // Filter products based on search
   const filteredProducts = Array.isArray(products)
     ? products.filter((product) =>
         product.name?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -85,18 +84,11 @@ function Home() {
 
   return (
     <div>
-      <Navbar />
-      <div className="container mx-auto p-6">
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+      {/* ✅ Pass props to Navbar */}
+      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
+      <div className="container mx-auto p-6">
+        {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -133,6 +125,7 @@ function Home() {
           )}
         </div>
 
+        {/* Add/Edit Product Form */}
         <div className="mt-6 max-w-md">
           <h2 className="text-2xl font-bold mb-4">
             {editingProduct ? "Edit Product" : "Add Product"}
